@@ -87,12 +87,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'esg_database',       
-        'USER': 'myuser',           
-        'PASSWORD': 'mypassword',      
-        'HOST': 'localhost',          
-        'PORT': '5432',               
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -143,7 +139,13 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'ab4ea21978b7dc'
+EMAIL_HOST_PASSWORD = '17770b8214f299'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'noreply@esg-platform.com'
 # ─── Django REST Framework ────────────────────────────────────────────────────
 
 REST_FRAMEWORK = {
