@@ -3,9 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { StatCard } from '../../components/ui/StatCard';
 import { dashboardApi, DashboardStats, reportsApi, ApiReport } from '../../services/api';
 import { Users, Building2, FileText, TrendingUp } from 'lucide-react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from 'recharts';
+
 
 export function AdminDashboard() {
   const { user } = useAuth();

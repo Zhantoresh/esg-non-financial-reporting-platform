@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { FileText, Edit, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { FileText, Edit, CheckCircle, Clock } from 'lucide-react';
 import { reportsApi, ApiReport } from '../../services/api';
 
 export function MyReports() {
