@@ -16,6 +16,15 @@ import { MyReports } from './pages/respondent/MyReports';
 import { ViewerDashboard } from './pages/viewer/ViewerDashboard';
 import { ViewerReports } from './pages/viewer/ViewerReports';
 import { ViewerAnalytics } from './pages/viewer/ViewerAnalytics';
+import { useAuth } from './contexts/AuthContext';
+
+function DashboardRedirect() {
+  const { user } = useAuth();
+  if (user?.role === 'administrator') return <Navigate to="/admin/dashboard" replace />;
+  if (user?.role === 'respondent') return <Navigate to="/respondent/dashboard" replace />;
+  if (user?.role === 'viewer') return <Navigate to="/viewer/dashboard" replace />;
+  return <Navigate to="/login" replace />;
+}
 
 export const router = createBrowserRouter([
   {
@@ -79,7 +88,7 @@ export const router = createBrowserRouter([
       // Common dashboard redirect
       {
         path: 'dashboard',
-        element: <Navigate to="/admin/dashboard" replace />,
+        element: <DashboardRedirect />,
       },
     ],
   },
