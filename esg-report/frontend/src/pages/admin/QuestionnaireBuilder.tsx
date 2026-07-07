@@ -4,7 +4,6 @@ import {
   Trash2,
   GripVertical,
   Save,
-  Eye,
   Leaf,
   Users as UsersIcon,
   Shield,
