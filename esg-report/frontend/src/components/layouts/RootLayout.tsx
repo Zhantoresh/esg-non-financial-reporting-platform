@@ -23,6 +23,24 @@ export function RootLayout() {
     return <Navigate to="/login" replace />;
   }
 
+    const path = location.pathname;
+
+  if (user?.role === 'respondent' && path.startsWith('/admin')) {
+    return <Navigate to="/respondent/dashboard" replace />;
+  }
+  if (user?.role === 'respondent' && path.startsWith('/viewer')) {
+    return <Navigate to="/respondent/dashboard" replace />;
+  }
+  if (user?.role === 'viewer' && path.startsWith('/admin')) {
+    return <Navigate to="/viewer/dashboard" replace />;
+  }
+  if (user?.role === 'viewer' && path.startsWith('/respondent')) {
+    return <Navigate to="/viewer/dashboard" replace />;
+  }
+  if (user?.role === 'administrator' && !path.startsWith('/admin')) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   const getNavItems = () => {
     switch (user?.role) {
       case 'administrator':
