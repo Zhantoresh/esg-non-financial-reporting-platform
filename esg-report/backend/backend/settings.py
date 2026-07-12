@@ -105,6 +105,7 @@ EMAIL_HOST_USER = 'ab4ea21978b7dc'
 EMAIL_HOST_PASSWORD = '17770b8214f299'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'noreply@esg-platform.com'
+# ─── Django REST Framework ────────────────────────────────────────────────────
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
