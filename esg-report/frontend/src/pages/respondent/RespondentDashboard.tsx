@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router';
 import { dashboardApi, DashboardStats, reportsApi, ApiReport } from '../../services/api';
 import { Plus, ArrowUpRight, FileText, Clock, TrendingUp, AlertTriangle, Leaf, Users, Shield } from 'lucide-react';
-
+import { RecommendationsBlock } from './components/RecommendationsBlock';
 // ─── Types from backend ───────────────────────────────────────────────────────
 interface ProblemZone {
   question: string;
@@ -450,7 +450,7 @@ export function RespondentDashboard() {
           </div>
           <ProblemZones zones={problemZones} />
         </div>
-
+      
         {/* Recent reports */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5">
           <div className="flex items-center justify-between mb-4">
@@ -487,7 +487,7 @@ export function RespondentDashboard() {
           )}
         </div>
       </div>
-
+      <RecommendationsBlock />
     </div>
   );
 }

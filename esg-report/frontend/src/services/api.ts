@@ -332,7 +332,22 @@ export const dashboardApi = {
     return request('GET', `/dashboard/stats/${qs ? `?${qs}` : ''}`);
   },
 };
+export interface ApiRecommendation {
+  id: number;
+  category: 'E' | 'S' | 'G';
+  title: string;
+  description: string;
+  priority: 'high' | 'medium' | 'low';
+}
 
+export const recommendationsApi = {
+  list: (params?: { report?: number }): Promise<ApiRecommendation[]> => {
+    const q = new URLSearchParams();
+    if (params?.report) q.set('report', String(params.report));
+    const qs = q.toString();
+    return request('GET', `/recommendations/${qs ? `?${qs}` : ''}`); // ⚠️ уточни путь у Алуа
+  },
+};
 // ─── Periods ─────────────────────────────────────────────────────────────────
 
 export interface ApiPeriod {
