@@ -33,6 +33,7 @@ urlpatterns = [
     path('reports/', views.ReportListView.as_view(), name='api-reports'),
     path('reports/<int:pk>/', views.ReportDetailView.as_view(), name='api-report-detail'),
     path('reports/<int:pk>/submit/', views.ReportSubmitView.as_view(), name='api-report-submit'),
+    path('reports/<int:pk>/review/', views.ReportReviewView.as_view(), name='api-report-review'),
     path('reports/<int:pk>/answers/', views.ReportAnswersView.as_view(), name='api-report-answers'),
 
     # Dashboard stats

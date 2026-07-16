@@ -522,6 +522,23 @@ class ReportSubmitView(APIView):
         return Response(ReportSerializer(report).data)
 
 
+class ReportReviewView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        if not request.user.is_admin:
+            return Response({'detail': 'Only admins can review reports.'}, status=403)
+        try:
+            report = Report.objects.get(pk=pk)
+        except Report.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=404)
+        if report.status != 'submitted':
+            return Response({'detail': 'Only submitted reports can be reviewed.'}, status=400)
+        report.status = ReportStatus.REVIEWED
+        report.save(update_fields=['status'])
+        return Response(ReportSerializer(report).data)
+    
+
 class ReportAnswersView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
