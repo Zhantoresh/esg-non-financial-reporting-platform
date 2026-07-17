@@ -268,6 +268,7 @@ export interface ApiReport {
   sScore?: number;
   gScore?: number;
   total_score?: number;
+  reviewer_notes?: string;
 }
 
 export interface ApiAnswer {
@@ -293,6 +294,7 @@ export const reportsApi = {
   create: (data: { company: number; questionnaire: number; period: number }): Promise<ApiReport> =>
     request('POST', '/reports/', data),
   submit: (id: number): Promise<ApiReport> => request('POST', `/reports/${id}/submit/`),
+  review: (id: number, notes?: string): Promise<ApiReport> => request('POST', `/reports/${id}/review/`, { notes }),
   getAnswers: (id: number): Promise<ApiAnswer[]> => request('GET', `/reports/${id}/answers/`),
   saveAnswers: (id: number, answers: ApiAnswer[]): Promise<ApiAnswer[]> =>
     request('POST', `/reports/${id}/answers/`, answers),
