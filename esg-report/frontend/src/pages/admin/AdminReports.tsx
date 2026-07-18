@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   Search, FileText, CheckCircle, Clock,
-  Download, FileSpreadsheet, Loader2, ChevronDown,
+  Download, FileSpreadsheet, Loader2, ChevronDown, ClipboardCheck,
 } from 'lucide-react';
 import { reportsApi, ApiReport } from '../../services/api';
 import {
@@ -9,7 +9,6 @@ import {
   buildExportData,
 } from '../../services/exportReport';
 
-// ─── Export button for a single report ───────────────────────────────────────
 function ExportMenu({ report }: { report: ApiReport }) {
   const [open, setOpen] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
@@ -63,7 +62,6 @@ function ExportMenu({ report }: { report: ApiReport }) {
 
       {open && (
         <>
-          {/* backdrop */}
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div className="absolute right-0 z-20 mt-1 w-44 bg-white rounded-xl border border-gray-200 shadow-lg py-1.5 text-sm overflow-hidden">
             <button
@@ -87,13 +85,74 @@ function ExportMenu({ report }: { report: ApiReport }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+function ReviewModal({
+  report,
+  onClose,
+  onReviewed,
+}: {
+  report: ApiReport;
+  onClose: () => void;
+  onReviewed: (updated: ApiReport) => void;
+}) {
+  const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const updated = await reportsApi.review(report.id, notes);
+      onReviewed(updated);
+      onClose();
+    } catch (e) {
+      console.error('Review failed', e);
+      alert('Ошибка при проверке отчёта');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-1">Отметить как проверено</h2>
+        <p className="text-sm text-gray-500 mb-4">
+          {report.companyName} — {report.periodName}
+        </p>
+        <textarea
+          value={notes}
+          onChange={e => setNotes(e.target.value)}
+          placeholder="Заметки ревьюера (необязательно)..."
+          rows={4}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none mb-4"
+        />
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            Отмена
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+            Подтвердить
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AdminReports() {
   const [reports, setReports] = useState<ApiReport[]>([]);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(true);
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [reviewingReport, setReviewingReport] = useState<ApiReport | null>(null);
 
   useEffect(() => {
     reportsApi.list()
@@ -130,16 +189,25 @@ export function AdminReports() {
     }
   };
 
+  const handleReviewed = (updated: ApiReport) => {
+    setReports(prev => prev.map(r => r.id === updated.id ? updated : r));
+  };
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      {/* Header */}
+      {reviewingReport && (
+        <ReviewModal
+          report={reviewingReport}
+          onClose={() => setReviewingReport(null)}
+          onReviewed={handleReviewed}
+        />
+      )}
+
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Все отчёты</h1>
           <p className="text-gray-500 text-sm">Просмотр и экспорт ESG-отчётов всех компаний</p>
         </div>
-
-        {/* Bulk Excel export */}
         <button
           onClick={handleBulkExcel}
           disabled={bulkLoading || filtered.length === 0}
@@ -157,7 +225,6 @@ export function AdminReports() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 flex flex-col lg:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -179,7 +246,6 @@ export function AdminReports() {
           <option value="submitted">Сданы</option>
           <option value="reviewed">Проверены</option>
         </select>
-
         {(search || filterStatus !== 'all') && (
           <span className="self-center text-xs text-gray-400 flex-shrink-0">
             {filtered.length} из {reports.length}
@@ -187,7 +253,6 @@ export function AdminReports() {
         )}
       </div>
 
-      {/* Table */}
       {loading ? (
         <div className="text-center py-16 text-gray-400 flex items-center justify-center gap-2">
           <Loader2 className="w-5 h-5 animate-spin" /> Загрузка...
@@ -203,7 +268,7 @@ export function AdminReports() {
                 <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Статус</th>
                 <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">E / S / G</th>
                 <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Экспорт</th>
+                <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -218,9 +283,16 @@ export function AdminReports() {
                     <td className="px-5 py-3.5 text-gray-500">{r.respondentName}</td>
                     <td className="px-5 py-3.5 text-gray-500">{r.periodName}</td>
                     <td className="px-5 py-3.5">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
-                        <Icon className="w-3 h-3" />{badge.label}
-                      </span>
+                      <div>
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
+                          <Icon className="w-3 h-3" />{badge.label}
+                        </span>
+                        {r.reviewer_notes && (
+                          <p className="text-xs text-gray-400 mt-1 max-w-xs truncate" title={r.reviewer_notes}>
+                            💬 {r.reviewer_notes}
+                          </p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-5 py-3.5 text-center">
                       {r.eScore != null ? (
@@ -243,7 +315,18 @@ export function AdminReports() {
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      <ExportMenu report={r} />
+                      <div className="flex items-center justify-end gap-2">
+                        {r.status === 'submitted' && (
+                          <button
+                            onClick={() => setReviewingReport(r)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 text-xs font-medium text-purple-600 hover:bg-purple-50 transition-colors"
+                          >
+                            <ClipboardCheck className="w-3.5 h-3.5" />
+                            Проверить
+                          </button>
+                        )}
+                        <ExportMenu report={r} />
+                      </div>
                     </td>
                   </tr>
                 );
