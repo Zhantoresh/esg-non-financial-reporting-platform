@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Lightbulb, Leaf, Users, Shield, AlertCircle } from 'lucide-react';
 import { recommendationsApi, ApiRecommendation } from '../../../services/api';
 
-// ⚠️ Поля ниже — предположение по структуре, которую пришлёт Алуа.
-// Как только она скинет реальный формат JSON, поправь интерфейс
-// ApiRecommendation в services/api.ts (и, если нужно, разметку ниже) —
-// сама вёрстка/состояния трогать не придётся.
+// Структура подтверждена по коду Алуа (reports/models.py + api/views.py):
+// GET /reports/<id>/recommendations/ → [{ id, category, title, description, priority }]
+// priority — число, 1 = высокий приоритет.
 
-const priorityConfig: Record<string, { label: string; bg: string; text: string; dot: string }> = {
-  high:   { label: 'Высокий приоритет',  bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500' },
-  medium: { label: 'Средний приоритет',  bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-400' },
-  low:    { label: 'Низкий приоритет',   bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-400' },
-};
+// В модели у Алуа priority — число, 1 = высокий приоритет (см. reports/models.py)
+function getPriorityStyle(priority: number): { label: string; bg: string; text: string; dot: string } {
+  if (priority <= 1) return { label: 'Высокий приоритет', bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500' };
+  if (priority === 2) return { label: 'Средний приоритет', bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-400' };
+  return { label: 'Низкий приоритет', bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-400' };
+}
 
 const categoryConfig: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
   E: { bg: 'bg-green-50',  text: 'text-green-700',  icon: Leaf,  label: 'Environmental' },
@@ -21,7 +21,7 @@ const categoryConfig: Record<string, { bg: string; text: string; icon: React.Ele
 
 function RecommendationCard({ rec }: { rec: ApiRecommendation }) {
   const cat = categoryConfig[rec.category] ?? categoryConfig.E;
-  const prio = priorityConfig[rec.priority] ?? priorityConfig.medium;
+  const prio = getPriorityStyle(rec.priority);
   const CatIcon = cat.icon;
 
   return (
@@ -61,15 +61,23 @@ function RecommendationsSkeleton() {
 
 export function RecommendationsBlock({ reportId }: { reportId?: number }) {
   const [recommendations, setRecommendations] = useState<ApiRecommendation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!reportId);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Эндпоинт вложенный (/reports/<id>/recommendations/), поэтому без id отчёта
+    // запрос делать нельзя — просто ничего не показываем (например, когда у
+    // респондента ещё нет ни одного отчёта).
+    if (!reportId) {
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
 
-    recommendationsApi.list(reportId ? { report: reportId } : undefined)
+    recommendationsApi.list(reportId)
       .then(data => { if (!cancelled) setRecommendations(data); })
       .catch(err => { if (!cancelled) setError(err.message ?? 'Не удалось загрузить рекомендации'); })
       .finally(() => { if (!cancelled) setLoading(false); });

@@ -337,16 +337,12 @@ export interface ApiRecommendation {
   category: 'E' | 'S' | 'G';
   title: string;
   description: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: number; // 1 = высокий приоритет
 }
 
 export const recommendationsApi = {
-  list: (params?: { report?: number }): Promise<ApiRecommendation[]> => {
-    const q = new URLSearchParams();
-    if (params?.report) q.set('report', String(params.report));
-    const qs = q.toString();
-    return request('GET', `/recommendations/${qs ? `?${qs}` : ''}`); // ⚠️ уточни путь у Алуа
-  },
+  list: (reportId: number): Promise<ApiRecommendation[]> =>
+    request('GET', `/reports/${reportId}/recommendations/`),
 };
 // ─── Periods ─────────────────────────────────────────────────────────────────
 

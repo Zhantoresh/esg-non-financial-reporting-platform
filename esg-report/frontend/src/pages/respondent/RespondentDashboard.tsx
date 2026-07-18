@@ -487,7 +487,7 @@ export function RespondentDashboard() {
           )}
         </div>
       </div>
-      <RecommendationsBlock />
+      <RecommendationsBlock reportId={recentReports[0]?.id} />
     </div>
   );
 }
