@@ -47,7 +47,7 @@ export function RegisterPage() {
 
         {/* Register form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Регитсрация</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Регистрация</h2>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">

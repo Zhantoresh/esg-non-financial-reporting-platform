@@ -332,7 +332,18 @@ export const dashboardApi = {
     return request('GET', `/dashboard/stats/${qs ? `?${qs}` : ''}`);
   },
 };
+export interface ApiRecommendation {
+  id: number;
+  category: 'E' | 'S' | 'G';
+  title: string;
+  description: string;
+  priority: number; // 1 = высокий приоритет
+}
 
+export const recommendationsApi = {
+  list: (reportId: number): Promise<ApiRecommendation[]> =>
+    request('GET', `/reports/${reportId}/recommendations/`),
+};
 // ─── Periods ─────────────────────────────────────────────────────────────────
 
 export interface ApiPeriod {
