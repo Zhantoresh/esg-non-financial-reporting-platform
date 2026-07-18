@@ -11,6 +11,7 @@ from reports.models import (
     Questionnaire, Question, Report, Answer,
     ReportingPeriod, ReportStatus,
 )
+from reports.recommendations import generate_recommendations
 from accounts.models import (
     PasswordResetToken)
 from .serializers import (
@@ -520,6 +521,50 @@ class ReportSubmitView(APIView):
         report.save(update_fields=['status', 'submitted_at'])
         report.calculate_scores()
         return Response(ReportSerializer(report).data)
+
+class ReportRecommendationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            report = Report.objects.get(pk=pk)
+        except Report.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=404)
+        
+        recommendations = report.recommendations.all().order_by('category', 'priority')
+        data = [
+            {
+                'id': r.id,
+                'category': r.category,
+                'title': r.title,
+                'description': r.description,
+                'priority': r.priority,
+            }
+            for r in recommendations
+        ]
+        return Response(data)
+
+    def post(self, request, pk):
+        if not request.user.is_admin:
+            return Response({'detail': 'Only admins can generate recommendations.'}, status=403)
+        try:
+            report = Report.objects.get(pk=pk)
+        except Report.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=404)
+        
+        generate_recommendations(report)
+        recommendations = report.recommendations.all().order_by('category', 'priority')
+        data = [
+            {
+                'id': r.id,
+                'category': r.category,
+                'title': r.title,
+                'description': r.description,
+                'priority': r.priority,
+            }
+            for r in recommendations
+        ]
+        return Response(data)
 
 
 class ReportReviewView(APIView):
