@@ -140,7 +140,6 @@ export function UserManagement() {
               >
                 <option value="respondent">Respondent</option>
                 <option value="viewer">Viewer</option>
-                <option value="administrator">Administrator</option>
               </select>
               <button
                 onClick={handleCreate}
