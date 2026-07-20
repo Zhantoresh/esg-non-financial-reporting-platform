@@ -122,12 +122,10 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'https://esg-non-financial-reporting-platform-production.up.railway.app',
-    'https://esg-non-financial-reporting-platform-jwaf8l7ri.vercel.app',
-    'https://esg-non-financial-reporting-platform-oibjir5mf.vercel.app',
+    'https://esg-non-financial-reporting-platfor.vercel.app',
 ]
