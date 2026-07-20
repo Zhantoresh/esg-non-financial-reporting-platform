@@ -63,6 +63,11 @@ class UserListSerializer(serializers.ModelSerializer):
     def get_lastLogin(self, obj):
         return obj.last_login.date().isoformat() if obj.last_login else None
 
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'role']
+
 
 class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()

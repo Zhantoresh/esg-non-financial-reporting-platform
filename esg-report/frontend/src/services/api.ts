@@ -162,6 +162,8 @@ export interface ApiUserAdmin {
 
 export const usersApi = {
   list: (): Promise<ApiUserAdmin[]> => request('GET', '/users/'),
+  create: (data: { email: string; password: string; first_name: string; last_name: string; role: string }): Promise<ApiUserAdmin> =>
+    request('POST', '/users/', data),
   toggleBlock: (id: number): Promise<{ id: number; isBlocked: boolean }> =>
     request('POST', `/users/${id}/toggle-block/`),
   resetPassword: (id: number, password: string): Promise<{ detail: string }> =>

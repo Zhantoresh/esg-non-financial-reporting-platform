@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Shield, User, Eye, Ban, Unlock, Trash2 } from 'lucide-react';
+import { Search, Shield, User, Eye, Ban, Unlock, Trash2, Plus, X } from 'lucide-react';
 import { usersApi, ApiUserAdmin } from '../../services/api';
 
 export function UserManagement() {
@@ -8,6 +8,15 @@ export function UserManagement() {
   const [filterRole, setFilterRole] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newUser, setNewUser] = useState({
+    email: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    role: 'respondent',
+  });
 
   useEffect(() => {
     usersApi.list()
@@ -37,6 +46,20 @@ export function UserManagement() {
     }
   };
 
+  const handleCreate = async () => {
+    setCreating(true);
+    try {
+      const created = await usersApi.create(newUser);
+      setUsers(prev => [...prev, created]);
+      setShowModal(false);
+      setNewUser({ email: '', password: '', first_name: '', last_name: '', role: 'respondent' });
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const filtered = users.filter(u => {
     const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -59,19 +82,77 @@ export function UserManagement() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8 flex items-center justify-between">
-  <div>
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">Управление пользователями</h1>
-    <p className="text-gray-600">Управление учетными записями пользователей, ролями и доступами</p>
-  </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Управление пользователями</h1>
+          <p className="text-gray-600">Управление учетными записями пользователей, ролями и доступами</p>
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          Создать пользователя
+        </button>
+      </div>
 
-  <button
-    onClick={() => window.open('http://127.0.0.1:8000/admin/accounts/user/', '_blank')}
-    className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors"
-  >
-    <Shield className="w-4 h-4" />
-    Django Admin
-  </button>
-</div>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Новый пользователь</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="Имя"
+                value={newUser.first_name}
+                onChange={e => setNewUser(p => ({ ...p, first_name: e.target.value }))}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+              <input
+                type="text"
+                placeholder="Фамилия"
+                value={newUser.last_name}
+                onChange={e => setNewUser(p => ({ ...p, last_name: e.target.value }))}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={newUser.email}
+                onChange={e => setNewUser(p => ({ ...p, email: e.target.value }))}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+              <input
+                type="password"
+                placeholder="Пароль"
+                value={newUser.password}
+                onChange={e => setNewUser(p => ({ ...p, password: e.target.value }))}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+              <select
+                value={newUser.role}
+                onChange={e => setNewUser(p => ({ ...p, role: e.target.value }))}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              >
+                <option value="respondent">Respondent</option>
+                <option value="viewer">Viewer</option>
+                <option value="administrator">Administrator</option>
+              </select>
+              <button
+                onClick={handleCreate}
+                disabled={creating}
+                className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-sm disabled:opacity-50"
+              >
+                {creating ? 'Создание...' : 'Создать'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
         <div className="flex flex-col lg:flex-row gap-4">

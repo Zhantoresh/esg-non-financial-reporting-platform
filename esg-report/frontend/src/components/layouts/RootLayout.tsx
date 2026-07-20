@@ -47,7 +47,7 @@ export function RootLayout() {
         return [
           { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Дэшборд' },
           { path: '/admin/users', icon: Users, label: 'Управление пользователями' },
-          { path: '/admin/companies', icon: Building2, label: 'Компаний' },
+          { path: '/admin/companies', icon: Building2, label: 'Компании' },
           { path: '/admin/questionnaires', icon: ClipboardList, label: 'Опросники' },
           { path: '/admin/reports', icon: FileText, label: 'Все отчеты' },
         ];

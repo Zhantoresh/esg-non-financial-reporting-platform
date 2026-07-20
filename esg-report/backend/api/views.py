@@ -19,7 +19,7 @@ from .serializers import (
     CompanySerializer, CompanyWriteSerializer,
     QuestionnaireSerializer, QuestionnaireListSerializer, QuestionSerializer,
     ReportSerializer, ReportCreateSerializer, AnswerSerializer,
-    ReportingPeriodSerializer,
+    ReportingPeriodSerializer, UserCreateSerializer
 )
 
 User = get_user_model()
@@ -174,12 +174,23 @@ class PasswordResetConfirmView(APIView):
         return Response({'detail': 'Password has been reset successfully.'})
 
 
-class UserListView(generics.ListAPIView):
-    serializer_class = UserListSerializer
+class UserListView(generics.ListCreateAPIView):
     permission_classes = [IsAdmin]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return UserCreateSerializer
+        return UserListSerializer
 
     def get_queryset(self):
         return User.objects.select_related('company').order_by('-date_joined')
+
+    def perform_create(self, serializer):
+        password = self.request.data.get('password')
+        user = serializer.save()
+        if password:
+            user.set_password(password)
+            user.save()
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
