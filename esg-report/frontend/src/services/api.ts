@@ -362,4 +362,6 @@ export interface ApiPeriod {
 
 export const periodsApi = {
   list: (): Promise<ApiPeriod[]> => request('GET', '/periods/'),
+  create: (data: { name: string; year: number; quarter?: number; start_date: string; end_date: string }): Promise<ApiPeriod> =>
+    request('POST', '/periods/', data),
 };

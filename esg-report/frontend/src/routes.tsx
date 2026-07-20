@@ -10,6 +10,7 @@ import { UserManagement } from './pages/admin/UserManagement';
 import { CompanyManagement } from './pages/admin/CompanyManagement';
 import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
 import { AdminReports } from './pages/admin/AdminReports';
+import { PeriodManagement } from './pages/admin/PeriodsManagement';
 import { RespondentDashboard } from './pages/respondent/RespondentDashboard';
 import { ReportWizard } from './pages/respondent/ReportWizard';
 import { MyReports } from './pages/respondent/MyReports';
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
           { path: 'companies', Component: CompanyManagement },
           { path: 'questionnaires', Component: QuestionnaireBuilder },
           { path: 'reports', Component: AdminReports },
+          { path: 'periods', Component: PeriodManagement },
         ],
       },
       // Respondent routes

@@ -11,7 +11,8 @@ import {
   LogOut,
   Shield,
   Eye,
-  User
+  User,
+  Calendar
 } from 'lucide-react';
 
 export function RootLayout() {
@@ -50,6 +51,7 @@ export function RootLayout() {
           { path: '/admin/companies', icon: Building2, label: 'Компании' },
           { path: '/admin/questionnaires', icon: ClipboardList, label: 'Опросники' },
           { path: '/admin/reports', icon: FileText, label: 'Все отчеты' },
+          { path: '/admin/periods', icon: Calendar, label: 'Периоды' },
         ];
       case 'respondent':
         return [
