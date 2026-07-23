@@ -20,9 +20,7 @@ export function RegisterPage() {
 
     try {
       await register(email, password, name, role);
-      const route = role === 'administrator' 
-        ? '/admin/dashboard' 
-        : role === 'respondent' 
+      const route = role === 'respondent' 
         ? '/respondent/dashboard' 
         : '/viewer/dashboard';
       navigate(route);
@@ -120,12 +118,10 @@ export function RegisterPage() {
               >
                 <option value="respondent">Респондент</option>
                 <option value="viewer">Пользователь</option>
-                <option value="administrator">Администратор</option>
               </select>
               <p className="mt-2 text-xs text-gray-500">
                 {role === 'respondent' && 'Создание и отправка отчетов ESG'}
                 {role === 'viewer' && 'Просмотр отчетов и аналитики (только для просмотра)'}
-                {role === 'administrator' && 'Полный доступ к платформе и управление ею'}
               </p>
             </div>
 
