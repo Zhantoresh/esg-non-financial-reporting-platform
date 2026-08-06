@@ -94,4 +94,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+], { basename: '/nonfin' });
