@@ -11,6 +11,8 @@ services:
       - ./backend/.env
     depends_on:
       - nonfin-db
+    volumes:
+      - nonfin-static:/app/staticfiles
     networks:
       - esg-network
     restart: unless-stopped
@@ -23,6 +25,8 @@ services:
       - "80"
     depends_on:
       - nonfin-backend
+    volumes:
+      - nonfin-static:/app/staticfiles:ro
     networks:
       - esg-network
     restart: unless-stopped
@@ -42,6 +46,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  nonfin-static:
   nonfin-db-data:
 
 networks:
