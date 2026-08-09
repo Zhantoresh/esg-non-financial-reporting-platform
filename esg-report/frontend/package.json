@@ -2,6 +2,7 @@
   "name": "esg-reporting-platform",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/nonfin",
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  nonfin-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    expose:
+      - "8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - nonfin-db
+    volumes:
+      - nonfin-static:/app/staticfiles
+    networks:
+      - esg-network
+    restart: unless-stopped
+
+  nonfin-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    depends_on:
+      - nonfin-backend
+    volumes:
+      - nonfin-static:/app/staticfiles:ro
+    networks:
+      - esg-network
+    restart: unless-stopped
+
+  nonfin-db:
+    image: postgres:15-alpine
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_DB: nonfin_db
+      POSTGRES_USER: nonfin_user
+      POSTGRES_PASSWORD: nonfin_password
+    volumes:
+      - nonfin-db-data:/var/lib/postgresql/data
+    networks:
+      - esg-network
+    restart: unless-stopped
+
+volumes:
+  nonfin-static:
+  nonfin-db-data:
+
+networks:
+  esg-network:
+    external: true
