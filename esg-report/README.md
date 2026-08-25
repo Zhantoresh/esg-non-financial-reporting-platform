@@ -1,44 +1,44 @@
 # ESG Reporting Platform
 
-Платформа для нефинансовой ESG-отчётности компаний Казахстана.
+A non-financial ESG reporting platform for companies in Kazakhstan.
 
-## Продакшен
+## Production
 
-- **Фронтенд:** https://esg-non-financial-reporting-platfor.vercel.app
-- **Бэкенд API:** https://esg-non-financial-reporting-platform-production.up.railway.app
+- **Frontend:** https://esg-non-financial-reporting-platfor.vercel.app
+- **Backend API:** https://esg-non-financial-reporting-platform-production.up.railway.app
 
 ---
 
-## Структура проекта
+## Project Structure
 
 ```
 esg-report/
 ├── backend/
 │   ├── manage.py
 │   ├── requirements.txt
-│   ├── backend/              # Django настройки (settings, urls, wsgi)
+│   ├── backend/              # Django settings (settings, urls, wsgi)
 │   ├── api/                  # REST API
 │   │   ├── urls.py
 │   │   ├── views.py
 │   │   └── serializers.py
-│   ├── accounts/             # Пользователи и аутентификация
-│   ├── companies/            # Компании
-│   ├── reports/              # Отчёты, опросники, периоды, рекомендации
-│   └── core/                 # Middleware (аудит-лог)
+│   ├── accounts/             # Users and authentication
+│   ├── companies/            # Companies
+│   ├── reports/              # Reports, questionnaires, periods, recommendations
+│   └── core/                 # Middleware (audit log)
 └── frontend/
     └── src/
         ├── services/
-        │   └── api.ts        # API-слой
+        │   └── api.ts        # API layer
         ├── contexts/
         │   └── AuthContext.tsx
-        └── pages/            # Страницы для всех ролей
+        └── pages/            # Pages for all roles
 ```
 
 ---
 
-## Локальный запуск
+## Running Locally
 
-### Бэкенд (Django)
+### Backend (Django)
 
 ```bash
 cd backend
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 python manage.py migrate
 
-# Создать администратора
+# Create an administrator
 python manage.py shell -c "
 from accounts.models import User, Role
 User.objects.create_superuser(
@@ -64,7 +64,7 @@ User.objects.create_superuser(
 print('Superuser created!')
 "
 
-# Создать тестовые периоды (опционально — можно через UI)
+# Create test periods (optional — can also be done via the UI)
 python manage.py shell -c "
 from reports.models import ReportingPeriod
 from datetime import date
@@ -76,64 +76,64 @@ print('Period created!')
 "
 
 python manage.py runserver
-# Бэкенд: http://localhost:8000
+# Backend: http://localhost:8000
 ```
 
-### Фронтенд (React)
+### Frontend (React)
 
 ```bash
 cd frontend
 npm install
 npm start
-# Фронтенд: http://localhost:3000
+# Frontend: http://localhost:3000
 ```
 
 ---
 
 ## API Endpoints
 
-| Метод | URL | Описание |
-|-------|-----|----------|
-| POST | `/api/auth/login/` | Вход (возвращает JWT) |
-| POST | `/api/auth/register/` | Регистрация (respondent / viewer) |
-| POST | `/api/auth/refresh/` | Обновление токена |
-| GET | `/api/auth/me/` | Текущий пользователь |
-| POST | `/api/auth/logout/` | Выход |
-| GET | `/api/users/` | Список пользователей (admin) |
-| POST | `/api/users/` | Создать пользователя (admin) |
-| POST | `/api/users/{id}/toggle-block/` | Блок/разблок пользователя |
-| GET | `/api/companies/` | Список компаний |
-| POST | `/api/companies/` | Создать компанию |
-| GET | `/api/questionnaires/` | Список опросников |
-| POST | `/api/questionnaires/` | Создать опросник |
-| GET | `/api/questionnaires/{id}/` | Опросник с вопросами |
-| GET | `/api/reports/` | Список отчётов |
-| POST | `/api/reports/` | Создать отчёт |
-| POST | `/api/reports/{id}/submit/` | Отправить отчёт |
-| POST | `/api/reports/{id}/review/` | Проверить отчёт (admin) |
-| GET | `/api/reports/{id}/answers/` | Ответы на вопросы |
-| POST | `/api/reports/{id}/answers/` | Сохранить ответы |
-| GET | `/api/reports/{id}/recommendations/` | Получить рекомендации |
-| POST | `/api/reports/{id}/recommendations/` | Сгенерировать рекомендации (admin) |
-| GET | `/api/dashboard/stats/` | Статистика для дашборда |
-| GET | `/api/periods/` | Список периодов |
-| POST | `/api/periods/` | Создать период |
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/api/auth/login/` | Log in (returns JWT) |
+| POST | `/api/auth/register/` | Register (respondent / viewer) |
+| POST | `/api/auth/refresh/` | Refresh token |
+| GET | `/api/auth/me/` | Current user |
+| POST | `/api/auth/logout/` | Log out |
+| GET | `/api/users/` | List users (admin) |
+| POST | `/api/users/` | Create user (admin) |
+| POST | `/api/users/{id}/toggle-block/` | Block/unblock user |
+| GET | `/api/companies/` | List companies |
+| POST | `/api/companies/` | Create company |
+| GET | `/api/questionnaires/` | List questionnaires |
+| POST | `/api/questionnaires/` | Create questionnaire |
+| GET | `/api/questionnaires/{id}/` | Questionnaire with questions |
+| GET | `/api/reports/` | List reports |
+| POST | `/api/reports/` | Create report |
+| POST | `/api/reports/{id}/submit/` | Submit report |
+| POST | `/api/reports/{id}/review/` | Review report (admin) |
+| GET | `/api/reports/{id}/answers/` | Get answers to questions |
+| POST | `/api/reports/{id}/answers/` | Save answers |
+| GET | `/api/reports/{id}/recommendations/` | Get recommendations |
+| POST | `/api/reports/{id}/recommendations/` | Generate recommendations (admin) |
+| GET | `/api/dashboard/stats/` | Dashboard statistics |
+| GET | `/api/periods/` | List periods |
+| POST | `/api/periods/` | Create period |
 
 ---
 
-## Роли пользователей
+## User Roles
 
-| Роль | Доступ |
+| Role | Access |
 |------|--------|
-| `administrator` | Полный доступ: пользователи, компании, опросники, все отчёты, периоды |
-| `respondent` | Создание и отправка своих отчётов |
-| `viewer` | Просмотр отправленных отчётов и аналитики |
+| `administrator` | Full access: users, companies, questionnaires, all reports, periods |
+| `respondent` | Create and submit their own reports |
+| `viewer` | View submitted reports and analytics |
 
-> Администратор создаётся только через CLI. Через форму регистрации можно создать только respondent или viewer.
+> An administrator can only be created via the CLI. The registration form can only create a `respondent` or `viewer`.
 
 ---
 
-## Известные ограничения
+## Known Limitations
 
-- PDF-экспорт отчётов отображает кириллицу с ошибками кодировки
-- Отчётные периоды ранее создавались только через CLI — теперь доступно через UI в разделе "Периоды"
+- PDF export of reports renders Cyrillic text with encoding errors
+- Reporting periods used to be creatable only via the CLI — now also available through the UI, in the "Periods" section
