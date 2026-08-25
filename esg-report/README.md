@@ -4,8 +4,7 @@ A non-financial ESG reporting platform for companies in Kazakhstan.
 
 ## Production
 
-- **Frontend:** https://esg-non-financial-reporting-platfor.vercel.app
-- **Backend API:** https://esg-non-financial-reporting-platform-production.up.railway.app
+- **URL:** https://esg.kbtu.kz/nonfin
 
 ---
 
@@ -130,6 +129,13 @@ npm start
 | `viewer` | View submitted reports and analytics |
 
 > An administrator can only be created via the CLI. The registration form can only create a `respondent` or `viewer`.
+
+---
+
+## Deployment & Base Path
+
+- Production build is deployed under the subpath /nonfin on https://esg.kbtu.kz/nonfin.
+- React Router is configured with basename="/nonfin" for routing under the institutional domain.
 
 ---
 
